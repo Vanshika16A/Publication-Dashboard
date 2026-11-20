@@ -1,0 +1,169 @@
+# Every analytic choice used to collect and build the Group 16 dataset.
+# Change values here, never in code, and add an entry to docs/decisions.md for each change.
+
+[collection]
+# Folder under data/raw/openalex/ that collect_openalex writes into. A snapshot with a
+# MANIFEST.json is complete and read-only; start a new date to re-collect.
+snapshot_id = "2026-10-08"
+
+[build]
+# Completed snapshot (must contain MANIFEST.json) that build_dataset reads.
+snapshot_id = "2026-10-08"
+start_year = 2016
+end_year = 2026
+# OpenAlex work types kept as "journal" (only when the primary source is a journal).
+# book-chapter, data-paper and software-paper in a journal source are journal papers that
+# OpenAlex labels differently (D-013).
+journal_work_types = ["article", "review", "letter", "book-chapter", "data-paper", "software-paper"]
+# OpenAlex work types kept as "conference". Articles in a conference source also count.
+conference_work_types = ["conference-paper"]
+# Book chapters count as "conference" when their source is a conference, or a book series
+# named here (proceedings series; matched case-insensitively on the full name) (D-013).
+# "Lecture notes in nanoscale science and technology" is left out: it publishes edited
+# monographs, not proceedings.
+conference_book_series = [
+    "Advances in intelligent systems and computing",
+    "Algorithms for intelligent systems",
+    "Astrophysics and space science proceedings",
+    "Developments in marketing science: proceedings of the Academy of Marketing Science",
+    "Lecture notes in bioengineering",
+    "Lecture notes in educational technology",
+    "Lecture notes in electrical engineering",
+    "Lecture notes in information systems and organisation",
+    "Lecture notes in management and industrial engineering",
+    "Lecture notes in mechanical engineering",
+    "Lecture notes in networks and systems",
+    "Lecture notes in operations research",
+    "Smart innovation, systems and technologies",
+    "Springer proceedings in business and economics",
+    "Springer proceedings in complexity",
+    "Springer proceedings in energy",
+    "Springer Proceedings in Materials",
+    "Springer proceedings in mathematics & statistics",
+    "Springer proceedings in physics",
+]
+
+[scope]
+# OpenAlex institution ids whose affiliations do NOT count towards their parent
+# assigned institution; they are then treated as separate Indian institutions.
+# Decision D-004 is pending: DU medical colleges are I39190216 (Maulana Azad Medical
+# College), I172982924 (University College of Medical Sciences), I114546181 (Lady
+# Hardinge Medical College).
+exclude_institution_ids = []
+
+[dedup]
+# Drop rows that are identical in every deliverable column (D-005).
+drop_identical_rows = true
+# When in-scope works share a DOI, keep only the one with the most citations; on a tie the
+# non-repository record, then the lowest work ID (D-012). Dropped works: doi_duplicates.csv.
+drop_doi_duplicates = true
+
+[flags]
+# cites_indian_inst is left blank (unknown) when OpenAlex has no reference list for the
+# paper, instead of FALSE (D-008).
+blank_cites_flag_without_references = true
+
+[hyperauthor]
+# Papers with at least this many authors get is_hyperauthor = TRUE in the enriched
+# file. The deliverable CSV keeps every paper; networks and statistics apply the cap.
+flag_threshold = 100
+
+[quartile]
+scimago_dir = "data/external/scimago"
+# Papers newer than the latest SCImago year use the latest year.
+use_latest_year_for_newer_papers = true
+core_file = "data/external/core/CORE_ICORE2026.csv"
+core_edition = "ICORE2026"
+# Only exact matching after normalisation is implemented.
+core_match = "exact"
+
+[ror]
+# ROR matches for raw affiliation strings (one JSON object per distinct string). They are
+# used only for authorships OpenAlex links to no institution, and only for
+# coauthor_institutes and coauthor_institutes_status; they never create rows (D-015).
+# The feature is off when the switch is false, the path is blank, or the file or the
+# MANIFEST.json beside it is missing; the build is then unchanged.
+# ROR "chosen" alone is not precise (e.g. "Institute of Medical Sciences" for "Kalinga
+# Institute of Medical Sciences"), so only matches marked `yes` in the manual review file are
+# used. `python -m dpcn_mapping.ror_review` writes the candidates; a missing file or blank
+# decision means the match is not used.
+use_for_unlinked_coauthors = true
+matches_file = "data/external/ror/2026-10-09/affiliation_matches.jsonl"
+review_file = "reviews/ror_matches.csv"
+# Reviewed ROR matches inside JNU/UoH/DU that were verified (Crossref, publication page, official
+# university site) and approved to give the author a row (D-022).
+assigned_rows_file = "reviews/ror_assigned_rows.csv"
+
+[reviews]
+# Affiliation review files (committed, filled by hand). A row marked `no` removes that author's
+# link to that assigned institution on that paper; other authors and institutions stay (D-018).
+affiliation_files = ["reviews/review_affiliation_uoh.csv", "reviews/review_affiliation_jnu.csv"]
+# Title-duplicate groups marked `yes` (same paper): one work kept, authors only on a dropped
+# copy carried over to it (D-019).
+title_duplicates_file = "reviews/review_title_duplicates.csv"
+# Author IDs marked `yes` (same person as the ORCID holder) share the ORCID as `person_id` in
+# the enriched file (D-020).
+split_authors_file = "reviews/review_split_authors.csv"
+# Papers a reviewer judged non-technical by topic; dropped whole and listed in
+# non_technical_dropped.csv (D-023).
+non_technical_file = "reviews/non_technical_papers.csv"
+
+[technical_filter]
+# Drop papers whose research comes only from confirmed non-technical units (D-021; units and
+# classes in docs/uni.md). A paper is dropped only when every author on it is from an assigned
+# institution, every affiliation segment (split on ";") of every author names a unit matching
+# `non_unit` and nothing matching `keep_words`, its primary field is in the Social Sciences
+# domain, and its title has no `method_words`. Anything else is kept.
+enabled = true
+non_unit = '''(?ix)
+ school\s+of\s+(social\s+sciences?|international\s+studies|language,?\s*literature|arts\s+and\s+aesthetics|sanskrit\s+and\s+indic|humanities)
+|centre\s+for\s+(historical\s+studies|political\s+studies|the\s+study\s+of\s+social\s+systems|philosophy|women'?s\s+studies|media\s+studies|informal\s+sector|the\s+study\s+of\s+law\s+and\s+governance|english\s+studies|french|german|russian\s+studies|chinese|japanese|korean|spanish|persian|arabic|indian\s+languages|african\s+studies|european\s+studies|west\s+asian|south\s+asian|east\s+asian|inner\s+asian|russian\s+and\s+central\s+asian|the\s+study\s+of\s+the\s+americas|international\s+(politics|legal)|comparative\s+politics|indo-pacific|security\s+and\s+strategic|educational\s+studies|the\s+study\s+of\s+social\s+inclusion|comparative\s+literature|folk\s+culture|regional\s+studies|dalit|ambedkar|diaspora|human\s+rights|tamil|north\s+east)
+|zakir\s+hus+ain\s+cent
+|management\s+(and\s+entrepreneurship|studies)|faculty\s+of\s+(law|management\s+studies)|law\s+centre|campus\s+law|national\s+security\s+studies
+|sarojini\s+naidu|school\s+of\s+arts\s+and\s+communication
+|department\s+of\s+(history|political\s+science|sociology|english|hindi|urdu|punjabi|persian|arabic|sanskrit(?!\s+studies)|philosophy|commerce|social\s+work|music|fine\s+arts|journalism|adult|african\s+studies|east\s+asian|buddhist|germanic|slavonic|education|business\s+economics|finance|telugu|dance|theatre|communication|political\s+studies)
+|shri\s+ram\s+college\s+of\s+commerce|aditi\s+mahavidyalaya|bhim\s+rao\s+ambedkar\s+college|college\s+of\s+art\b|delhi\s+college\s+of\s+arts
+|(dyal\s+singh|moti\s*lal\s+nehru|shyam\s+lal|sri\s+aurobindo|satyawati|shaheed\s+bhagat\s+singh)\s+college\s*\(\s*(e|eve|evening)\s*\)|zakir\s+husain\s+(post\s+graduate|pg)\s+evening'''
+# Borderline or technical words: a segment naming any of these is never treated as non-technical.
+keep_words = '''(?ix)physic|chemi|biolog|bio|life\s+science|environment|engineer|technolog|comput|informati|data|mathemat|statistic|science\s+policy|nano|medic|health|hospital|clinic|nurs|pharma|psycholog|geograph|regional\s+development|linguistic|library|econom|operational|electron|botany|zoology|geolog|genetic|microbio|agricult|plant|physiol|anatom|institute\s+of|instrument|laborator|research\s+cent|cognitive|neuro|ayurved|sports|education(al)?\s+technology|\bgis\b|remote\s+sensing'''
+# Each segment must also name the author's own assigned university (JNU and UoH: the audit
+# name patterns; DU below). A segment naming only another institution keeps the paper.
+du_name = '(?i)university\s+of\s+delhi|delhi\s+university|\bdu\b|du\.ac\.in'
+# Titles naming a computational or quantitative method protect a paper.
+method_words = '''(?ix)machine\s+learning|deep\s+learning|neural\s+network|artificial\s+intelligence|\bai\b|algorithm|computational|simulation|text\s+mining|natural\s+language|\bnlp\b|big\s+data|data[- ]driven|network\s+analysis|agent[- ]based|forecast|predict|model(l)?ing|regression|econometric|panel\s+data|time[- ]series|structural\s+equation|\bsem\b|factor\s+analysis|\bgis\b|remote\s+sensing|blockchain|software|digital\s+humanit'''
+
+[audit]
+# Heuristics used only to produce review lists in data/builds/<id>/ (they change no data).
+# Regular expressions are matched case-insensitively against raw_affiliation.
+# Medical colleges counted under University of Delhi (D-004).
+du_medical_institution_ids = ["I39190216", "I172982924", "I114546181"]
+# A UoH row is "suspect" when its raw affiliation does not name UoH (uoh_name) but names
+# another institution (uoh_other).
+uoh_name = 'univ\w*\.?\s+(?:of\s+)?hyderabad|hyderabad\s+(?:central\s+)?univ|\buoh\b|\bhcu\b|uni\. of hyderabad|hyderabad u\b|gachibowli|central university|హైదరాబాదు విశ్వవిద్యాలయం'
+uoh_other = 'osmania|reddy|griet|iit|iiit|iiser|jntu|engineering|nalsar|icrisat|ccmb|iict|nirdpr'
+# A JNU row is "suspect" when its raw affiliation mentions a confusable institution.
+jnu_confusable = 'jncasr|centre for advanced scientific|jntu|technological'
+# A JNU row names JNU when this matches (misspellings, other languages). Rows that do not, or
+# that match jnu_confusable, are affiliation review candidates (D-018).
+# Biography-style affiliation text (career prose, alumni, former/retired/emeritus): the named
+# institution may not be the author's affiliation on the paper. Review candidates (D-018).
+biography = '\b(?:is an? (?:assistant |associate )?professor|is an? (?:noted|senior|retired|eminent|well)|holds an? (?:ph|doctor|master)|ph\.?\s?d\.? from|completed (?:his|her) |former(?:ly)? professor|retired (?:as )?professor|professor emerit)'
+jnu_name = 'nehru\s+univ|univ\w*\s+(?:of\s+)?jawaharlal\s+nehru|\bjnu\b|j\.n\.u|जवाहर\s*लाल\s*नेहरू|เยาวหร์ลาลเนห์รู|new mehrauli'
+# Titles shorter than this (after removing non-alphanumerics) are ignored as too generic.
+title_duplicate_min_length = 21
+
+[doi]
+# DOIs for papers OpenAlex gives none, found by Crossref title search (`python -m
+# dpcn_mapping.collect_doi`, D-024). The build fills a blank doi only from rows marked `yes` in the
+# review file, and refuses a DOI already held by another work in the snapshot. Rows marked `copy`
+# drop the DOI-less work as a copy of `doi_conflict_work`, which holds the DOI.
+review_file = "reviews/review_doi_matches.csv"
+# A candidate's title must reach this similarity (difflib ratio on normalised titles) to count.
+title_threshold = 0.95
+# Papers whose best Crossref item is below this similarity get no review row (doi_no_candidate.csv).
+review_min_similarity = 0.80
+# Repository and preprint DOI prefixes: never strong (Zenodo, SSRN, bioRxiv/medRxiv, arXiv, OSF,
+# Research Square, Preprints.org, figshare, Authorea, TechRxiv, ChemRxiv, ResearchGate, SciELO preprints).
+repository_prefixes = ["10.5281/", "10.2139/", "10.1101/", "10.48550/", "10.31219/", "10.31234/", "10.31235/",
+                       "10.31222/", "10.17605/", "10.21203/", "10.20944/", "10.6084/", "10.22541/", "10.36227/",
+                       "10.26434/", "10.13140/", "10.1590/SciELOPreprints"]

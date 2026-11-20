@@ -1,0 +1,79 @@
+we only downloaded from within science and engineering fields through the openalex api.
+
+this includes the following openalex primary topics:
+- agricultural and biological sciences
+- biochemistry, genetics and molecular biology
+- chemical engineering
+- chemistry
+- computer science
+- earth and planetary sciences
+- energy
+- engineering
+- environmental science
+- immunology and microbiology
+- materials science
+- mathematics
+- neuroscience
+- physics and astronomy
+
+we did not include:
+- medicine, nursing, dentistry, health professions, veterinary
+- pharmacology, toxicology and pharmaceutics
+- arts and humanities, social sciences, psychology
+- business, management and accounting
+- economics, econometrics and finance
+- decision sciences
+
+each paper has one primary topic in openalex. we used that one to decide if a paper is in or out.
+
+we downloaded the following types of papers:
+- article
+- conference paper
+
+we included all of the above published between 2016 and 2026.
+
+we only downloaded papers with at least one author from:
+- jawaharlal nehru university (openalex id I152429107)
+- university of hyderabad (openalex id I36893310)
+- university of delhi (openalex id I110166357)
+
+this also counts their colleges and centres.
+
+the download was done on 13 october 2026. citation counts are as of that day.
+
+this gave us 38,761 papers:
+- 35,233 articles
+- 3,528 conference papers
+
+papers per institution:
+- university of delhi: 23,830
+- jawaharlal nehru university: 8,346
+- university of hyderabad: 7,683
+
+(these add up to more than 38,761 because 1,097 papers have authors from two or more of
+the three institutions.)
+
+papers per year:
+- 2016: 2,878
+- 2017: 2,920
+- 2018: 3,091
+- 2019: 3,007
+- 2020: 3,327
+- 2021: 3,724
+- 2022: 3,839
+- 2023: 4,060
+- 2024: 4,278
+- 2025: 4,326
+- 2026: 3,311 (partial obviously)
+
+1,118 of these papers have 100 or more authors. openalex only gives the first 100 authors in
+a normal search, so we downloaded the full author list for these papers one by one.
+
+along with the papers, we also downloaded:
+- author profiles (h-index, orcid) for 20,627 authors
+- 172,436 indian papers that our papers cite
+- 138,740 indian papers that cite our papers
+- details for 6,938 journals and conferences
+- the core conference ranking list (for conference ranks)
+
+these numbers are from the download itself, before any cleaning.

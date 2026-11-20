@@ -1,0 +1,35 @@
+<!-- University of Delhi: the Vice-Regal Lodge (central clock tower, arched verandah). Line art, colour from currentColor. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 120" role="img" aria-label="University of Delhi, Vice-Regal Lodge">
+  <rect class="fill" x="40" y="62" width="160" height="42" />
+  <rect class="fill" x="104" y="32" width="32" height="30" />
+  <g class="draw">
+    <path pathLength="1" d="M8 104H232" />
+    <path pathLength="1" d="M40 104V62H104M136 62H200V104" />
+    <path pathLength="1" d="M34 62H104M136 62H206" />
+    <path pathLength="1" d="M104 62V32H136V62" />
+    <path pathLength="1" d="M100 32H140" />
+    <path pathLength="1" d="M108 32Q120 14 132 32" />
+    <path pathLength="1" d="M120 19V7L131 10L120 13" />
+    <circle pathLength="1" cx="120" cy="45" r="6.5" />
+    <path pathLength="1" d="M120 41V45L123 47" />
+    <path pathLength="1" d="M112 104V88A8 8 0 0 1 128 88V104" />
+    <path pathLength="1" d="M48 104V92A6 6 0 0 1 60 92V104" />
+    <path pathLength="1" d="M68 104V92A6 6 0 0 1 80 92V104" />
+    <path pathLength="1" d="M88 104V92A6 6 0 0 1 100 92V104" />
+    <path pathLength="1" d="M140 104V92A6 6 0 0 1 152 92V104" />
+    <path pathLength="1" d="M160 104V92A6 6 0 0 1 172 92V104" />
+    <path pathLength="1" d="M180 104V92A6 6 0 0 1 192 92V104" />
+    <path pathLength="1" d="M50 70H58V78H50Z" />
+    <path pathLength="1" d="M70 70H78V78H70Z" />
+    <path pathLength="1" d="M90 70H98V78H90Z" />
+    <path pathLength="1" d="M142 70H150V78H142Z" />
+    <path pathLength="1" d="M162 70H170V78H162Z" />
+    <path pathLength="1" d="M182 70H190V78H182Z" />
+  </g>
+  <g class="draw soft">
+    <circle pathLength="1" cx="20" cy="80" r="11" />
+    <path pathLength="1" d="M20 91V104" />
+    <circle pathLength="1" cx="221" cy="82" r="9" />
+    <path pathLength="1" d="M221 91V104" />
+  </g>
+</svg>

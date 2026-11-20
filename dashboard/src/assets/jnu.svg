@@ -1,0 +1,31 @@
+<!-- Jawaharlal Nehru University: the brick Administration Block in front of the Aravalli ridge. Line art, colour from currentColor. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 120" role="img" aria-label="Jawaharlal Nehru University, Administration Block and Aravalli ridge">
+  <rect class="fill" x="66" y="52" width="108" height="52" />
+  <rect class="fill" x="88" y="36" width="64" height="16" />
+  <g class="draw soft">
+    <path pathLength="1" d="M8 96L26 70L40 80L56 60L66 68" />
+    <path pathLength="1" d="M174 64L188 50L202 68L216 58L232 86" />
+  </g>
+  <g class="draw">
+    <path pathLength="1" d="M8 104H232" />
+    <path pathLength="1" d="M66 104V52H174V104" />
+    <path pathLength="1" d="M88 52V36H152V52" />
+    <path pathLength="1" d="M62 52H178" />
+    <path pathLength="1" d="M84 36H156" />
+    <path pathLength="1" d="M78 58V98" />
+    <path pathLength="1" d="M90 58V98" />
+    <path pathLength="1" d="M102 58V98" />
+    <path pathLength="1" d="M138 58V98" />
+    <path pathLength="1" d="M150 58V98" />
+    <path pathLength="1" d="M162 58V98" />
+    <path pathLength="1" d="M100 41H140" />
+    <path pathLength="1" d="M110 104V84H130V104" />
+    <path pathLength="1" d="M114 60H126V74H114Z" />
+    <path pathLength="1" d="M182 104Q184 92 196 92Q208 92 210 104" />
+    <path pathLength="1" d="M206 104Q210 97 218 98Q224 100 224 104" />
+  </g>
+  <g class="draw soft">
+    <path pathLength="1" d="M34 104V88" />
+    <path pathLength="1" d="M34 90Q24 86 22 78Q30 76 34 84Q38 74 46 76Q44 86 34 90" />
+  </g>
+</svg>

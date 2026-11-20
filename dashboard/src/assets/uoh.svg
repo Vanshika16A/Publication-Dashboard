@@ -1,0 +1,27 @@
+<!-- University of Hyderabad: Mushroom Rock, the campus's granite landmark, with the lake. Line art, colour from currentColor. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 120" role="img" aria-label="University of Hyderabad, Mushroom Rock">
+  <path class="fill" d="M78 54C70 34 110 22 140 28C168 33 178 50 160 59C140 67 96 67 78 54Z" />
+  <path class="fill" d="M104 63C100 77 96 91 92 104H152C148 92 142 78 140 63Z" />
+  <g class="draw soft">
+    <path pathLength="1" d="M8 104L36 80L52 90L70 76" />
+    <path pathLength="1" d="M186 30Q190 26 194 30Q198 26 202 30" />
+    <path pathLength="1" d="M206 22Q209 19 212 22Q215 19 218 22" />
+  </g>
+  <g class="draw">
+    <path pathLength="1" d="M8 104H178" />
+    <path pathLength="1" d="M78 54C70 34 110 22 140 28C168 33 178 50 160 59C140 67 96 67 78 54Z" />
+    <path pathLength="1" d="M96 42C108 36 124 34 138 36" />
+    <path pathLength="1" d="M104 63C100 77 96 91 92 104" />
+    <path pathLength="1" d="M140 63C142 78 148 92 152 104" />
+    <path pathLength="1" d="M118 66C116 78 118 90 116 104" />
+    <path pathLength="1" d="M58 104C60 94 74 90 92 96" />
+    <path pathLength="1" d="M150 104C152 90 170 86 180 96C184 100 184 104 184 104" />
+  </g>
+  <g class="draw soft">
+    <path pathLength="1" d="M190 104H232" />
+    <path pathLength="1" d="M192 110Q197 107 202 110T212 110T222 110" />
+    <path pathLength="1" d="M200 116Q205 113 210 116T220 116" />
+    <circle pathLength="1" cx="30" cy="86" r="8" />
+    <path pathLength="1" d="M30 94V104" />
+  </g>
+</svg>

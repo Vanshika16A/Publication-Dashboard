@@ -1,0 +1,144 @@
+# Every choice the collector makes. Change values here, not in code.
+
+[group]
+number = 16
+
+# OpenAlex institution ids, checked against ROR (https://api.openalex.org/institutions/ror:<ror>).
+[institutions."Jawaharlal Nehru University"]
+openalex_id = "I152429107"
+ror = "0567v8t28"
+# Raw affiliation text that names the institution, and text that names a look-alike.
+# An affiliation string that matches `confusable` but not `own` is not accepted as this institution.
+own = 'jawaharlal nehru univ|\bjnu\b'
+confusable = 'jncasr|centre for advanced scientific|jntu|technological'
+
+[institutions."University of Hyderabad"]
+openalex_id = "I36893310"
+ror = "04a7rxb17"
+own = 'univ\w*\.?\s+(?:of\s+)?hyderabad|hyderabad\s+(?:central\s+)?univ|\buoh\b|\bhcu\b|uni\. of hyderabad|hyderabad u\b|gachibowli|central university'
+confusable = 'osmania|reddy|griet|\biit\b|\biiit\b|iiser|jntu|engineering|nalsar|icrisat|ccmb|iict|nirdpr'
+
+[institutions."University of Delhi"]
+openalex_id = "I110166357"
+ror = "04gzb2213"
+own = ''
+confusable = ''
+
+[collection]
+start_year = 2016
+end_year = 2026
+# OpenAlex work types to download. The CSV `type` column only allows journal / conference.
+# Letters (short correspondence) and reviews are left out on purpose: they are never downloaded.
+work_types = ["article", "conference-paper"]
+# Ask OpenAlex for the cheapest list calls possible; do not change unless the API changes.
+batch_size = 100
+
+[scope]
+# Science and engineering only. A paper is kept when its OpenAlex *primary topic* belongs to one
+# of these fields (names as listed at https://api.openalex.org/fields). Medicine, Nursing,
+# Dentistry, Health Professions, Veterinary, Arts and Humanities, Social Sciences, Business,
+# Economics, Psychology and Decision Sciences are left out on purpose.
+# Borderline: add "Pharmacology, Toxicology and Pharmaceutics" if you count it as science.
+include_fields = [
+  "Agricultural and Biological Sciences",
+  "Biochemistry, Genetics and Molecular Biology",
+  "Chemical Engineering",
+  "Chemistry",
+  "Computer Science",
+  "Earth and Planetary Sciences",
+  "Energy",
+  "Engineering",
+  "Environmental Science",
+  "Immunology and Microbiology",
+  "Materials Science",
+  "Mathematics",
+  "Neuroscience",
+  "Physics and Astronomy",
+]
+
+[affiliation]
+# What to do when OpenAlex places an author at an assigned institution but no raw affiliation
+# string written by the author (on that paper) backs it up:
+#   "drop" - leave the row out (written to review/dropped_affiliation.csv)   [default]
+#   "flag" - keep the row; extended file column `affiliation_stated` is FALSE
+#   "keep" - keep the row silently
+unstated = "drop"
+# Apply the `confusable` / `own` patterns above (JNU vs JNCASR/JNTU, UoH vs Osmania/IIT ...).
+check_lookalikes = true
+
+[dedup]
+# Works that share a DOI: keep the one with most citations.
+doi = true
+# Works that share a normalised title (>= title_min_length letters/digits) and year AND at
+# least one affiliated author: keep the one with most citations. Every group is written to
+# review/title_duplicates.csv.
+title = true
+title_min_length = 21
+# Merge OpenAlex author ids that carry the same ORCID into one person.
+merge_authors_by_orcid = true
+
+[hyperauthor]
+# Papers with at least this many authors are flagged in the extended file and left out of the
+# authorship network (they would connect everyone to everyone). Kept in every other output.
+threshold = 100
+
+[quartile]
+# SCImago yearly exports, downloaded by hand (scimagojr.com blocks scripts): see README.md.
+scimago_dir = "collector/external/scimago"
+# Optional Clarivate JCR exports (needs a subscription): impact factor and JCR quartile.
+jcr_dir = "collector/external/jcr"
+core_file = "collector/external/core/CORE_ICORE2026.csv"
+core_source = "ICORE2026"
+# Use the nearest SCImago year when the paper's own year has no quartile for that journal
+# (e.g. 2026 papers, or a journal SCImago only ranked in some years). Marked in quartile_source.
+nearest_year_fallback = true
+# When no ISSN matches, try an exact match on the normalised journal title.
+title_fallback = true
+# Allow SCImago quartiles for conference-type papers published in indexed proceedings series
+# (e.g. Lecture Notes in Computer Science) when CORE has no rank for the venue.
+scimago_for_conference_series = true
+
+[clean]
+# Applied by `python -m collector clean` on top of the built CSV. Every removed or changed row is
+# written to output/clean/review/ with the rule that caught it.
+
+# Second science/engineering check, at journal level: drop a paper when SCImago lists its venue
+# (in any year) and none of the venue's SCImago subject areas is in scope.include_fields.
+# This catches clinical journals (pediatrics, oncology, ...) whose papers OpenAlex tags as biology.
+check_venue_areas = true
+# SCImago areas that also count as in scope (Nature, Science, PLOS ONE are "Multidisciplinary").
+extra_venue_areas = ["Multidisciplinary"]
+
+# Retracted / withdrawn papers and publication notices (errata, prefaces, editorials ...),
+# matched case-insensitively against the title.
+drop_retracted = true
+drop_notices = true
+notice_patterns = [
+  '^(erratum|errata|corrigendum|corrigenda)\b',
+  '^correction\s*(to\b|:)',
+  '^(editorial|guest editorial|editor.?s note)\b',
+  '^(preface|foreword|front matter|back matter|table of contents|subject index|author index)\b',
+  '^(introduction|editorial introduction)$',
+  '^introduction to the special (issue|section|topic)',
+  '^(obituary|in memoriam)\b',
+  '^50 years ago in$',
+  '^expression of concern',
+]
+
+# Venues that are not original research (abstracting digests, meeting-abstract books, news) or
+# are outside science and not listed in SCImago. Exact names, case-insensitive.
+exclude_venues = [
+  "ChemInform",
+  "SPAST Abstracts",
+  "Goldschmidt Abstracts",
+  "Abstracts with programs - Geological Society of America",
+  "ISEE Conference Abstracts",
+  "ARPHA Conference Abstracts",
+  "AIJR Abstracts",
+  "Library Herald",
+  "Library Hi Tech News",
+  "Yearbook of International Environmental Law",
+]
+
+# Rows whose "author" is a group, not a person (e.g. "on behalf of the CMS collaboration").
+non_person_author = 'on\s+behalf\s+of|collaboration|consortium|study group|\binvestigators\b'

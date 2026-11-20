@@ -1,0 +1,24 @@
+# Completed work
+
+- [x] OpenAlex collection for all three institutions (D-001, D-010)
+- [x] Snapshot sealed; config, decision log, codebook, build manifests, validation (D-002)
+- [x] SCImago 2016–2025 quartiles (D-009)
+- [x] Identical rows dropped: 322 (D-005)
+- [x] `cites_indian_inst` blank when no reference list (D-008)
+- [x] Audit with every build: all gap, duplicate and affiliation counts reproducible
+- [x] Text cleanup and DOI repair, recorded per build (D-017)
+- [x] Works sharing a DOI deduplicated (D-012)
+- [x] Work types revised: 894 mislabeled journal and conference papers added (D-013)
+- [x] Affiliation per paper, documented (D-014)
+- [x] `coauthor_institutes_status` in the enriched file (D-015)
+- [x] ROR collection for 13,028 unlinked affiliation strings; review list of 204 (D-015)
+- [x] DuckDB database, browser UI and quality-check queries
+- [x] Reviewed affiliation links applied: 49 removed (D-018)
+- [x] Reviewed title duplicates applied: 420 copies dropped, 12 authors carried over (D-019)
+- [x] Reviewed split authors applied as `person_id` (D-020)
+- [x] Crossref check of biography-style affiliations (`collect_crossref`)
+- [x] Unit list of the three universities from official sites (`docs/uni.md`)
+- [x] Papers only from non-technical units dropped: 2,861 (D-021)
+- [x] Verified ROR matches inside DU/UoH added as rows: 16 (D-022)
+- [x] Second affiliation review round applied: 163 links removed in total (D-018)
+- [x] Crossref title search for papers without a DOI (`collect_doi`): 0 DOIs filled, 8 DOI-less copies dropped, 373 non-technical DOI-less papers listed (D-024, D-023)

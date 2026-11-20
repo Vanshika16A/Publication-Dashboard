@@ -1,0 +1,141 @@
+we started from the 38,761 papers in the download (see collection.txt).
+
+cleaning happens in two steps:
+- build: turns the papers into csv rows and removes duplicates and wrong affiliations
+- clean: removes papers that are out of scope or are not research, and tidies names and titles
+
+every removed paper or row is saved in a review file, so it can be checked by hand.
+build review files: collector/data/output/build/review/
+clean review files: collector/data/output/review/
+
+
+=== build ===
+
+1. only real journal and conference papers
+
+openalex calls some things "article" that are not in a journal or conference.
+we removed 512 papers:
+- 361 only in a repository
+- 145 with no journal or conference at all
+- 6 in a book series
+
+a paper is a "journal" paper if it is an article in a journal.
+a paper is a "conference" paper if it is a conference paper, or an article in a conference.
+
+left: 38,249 papers
+
+
+2. duplicate papers
+
+sometimes openalex has the same paper twice.
+- same doi: 1 paper removed
+- same title, same year and at least one same author: 126 papers removed
+
+when two copies were found, we kept the one with the most citations.
+
+left: 38,122 papers
+
+
+3. one row per author
+
+the csv has one row for each (paper, institution, author).
+so a paper by 3 du authors gives 3 rows.
+this gave 97,901 rows.
+
+
+4. checking affiliations
+
+openalex sometimes puts an author at one of our institutions when the author did not write it.
+we only kept a row if the author's own affiliation text on that paper names the institution.
+we removed 44 rows:
+- 27 named a look-alike institution
+  (e.g. "OU, Hyderabad" is osmania university, not university of hyderabad.
+  jncasr and jntu are not jnu.)
+- 17 had no affiliation text at all on that paper
+
+17 papers lost all their authors this way, so they were removed too.
+
+left: 38,105 papers
+
+
+5. same person more than once
+
+some people have two or more openalex ids. if two ids have the same orcid, we treated them as
+one person. this merged 272 ids.
+after that:
+- 718 rows were the same person twice on the same paper: removed
+- 131 rows were exactly the same as another row in every column: removed
+
+left after build: 38,105 papers, 97,008 rows
+
+
+=== clean ===
+
+6. journals outside science and engineering
+
+openalex sometimes tags a medical paper as biology, so it passed the download filter.
+scimago lists the subject areas of every journal. if none of a journal's areas is one of our
+14 fields, we removed its papers.
+we removed 1,874 papers, mostly from medical journals (pediatrics, dermatology, oncology,
+neurology, etc.), pharmacy, social sciences, business, law and humanities journals.
+
+
+7. venues that are not research
+
+we removed 171 papers from:
+- chemInform (it only re-lists papers published elsewhere)
+- books of meeting abstracts (spast abstracts, goldschmidt abstracts and others)
+- library and law venues that scimago does not list (library herald, library hi tech news,
+  yearbook of international environmental law)
+
+
+8. papers that are not research
+
+- 34 retracted or withdrawn papers
+- 13 notices: errata, prefaces, editorials, "50 years ago in" columns
+
+
+9. authors that are not people
+
+3 rows had a group as the author (e.g. "on behalf of the cms collaboration"): removed.
+
+
+10. tidying names and titles (nothing removed)
+
+author names (1,141 rows changed):
+- removed footnote numbers and orcid text ("sonker1" -> "sonker")
+- removed dr., prof., mr., ms.
+- fixed names written twice ("shilpi gupta shilpi gupta" changed to "shilpi gupta")
+- ALL CAPS names in normal case ("VED PRAKASH GUPTA" -> "Ved Prakash Gupta")
+  (initials like "MS" or "D. K." are kept as they are.)
+
+titles (213 rows changed):
+- removed one full stop at the end ("... in the rat." -> "... in the rat")
+  (not after "et al." or "sp.")
+
+
+=== final data ===
+
+36,013 papers, 92,219 rows:
+- 32,517 journal papers
+- 3,496 conference papers
+
+papers per institution:
+- university of delhi: 21,856 (58,480 rows)
+- jawaharlal nehru university: 7,895 (16,621 rows)
+- university of hyderabad: 7,324 (17,118 rows)
+
+quartiles:
+- 29,526 of the 32,517 journal papers have a scimago quartile (91%)
+  (3,522 of these use the nearest scimago year, e.g. 2026 papers use 2025.)
+- 1,179 of the 3,496 conference papers have a rank (98 from core, the rest are scimago
+  quartiles of the proceedings series they are published in)
+
+
+=== known gaps (not fixed) ===
+
+- 6,115 rows have no openalex author id, so they have no h-index.
+- 5,253 rows have cites_indian_inst blank, because openalex has no reference list for the paper.
+- 1,061 papers have 100 or more authors. they are kept, and marked in the extended csv.
+- openalex cannot tell faculty from students, so authors are "affiliated authors".
+- two different people with the same openalex id cannot be found.

@@ -1,0 +1,1 @@
+{"groups":[{"id":"le10","label":"Papers with 10 or fewer authors","papers":33588,"min_authors":1,"max_authors":10},{"id":"gt10","label":"Papers with more than 10 authors","papers":2425,"min_authors":11,"max_authors":null}]}
